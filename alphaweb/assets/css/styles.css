@@ -3519,8 +3519,12 @@ body.page-projects::before {
 /* Solutions Page Hero */
 .page-solutions .page-hero {
   background:
-    linear-gradient(135deg, rgba(32, 24, 0, 0.6) 0%, rgba(48, 36, 16, 0.5) 50%, rgba(32, 24, 0, 0.6) 100%),
-    url('https://images.pexels.com/photos/20016/showing-reflecting-light-20016.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover;
+    linear-gradient(90deg, rgba(8, 12, 24, 0.82) 0%, rgba(8, 12, 24, 0.4) 55%, rgba(8, 12, 24, 0.2) 100%),
+    url('assets/images/solutions-doodle-bg.png') center/cover;
+}
+
+.page-solutions .page-hero::before {
+  opacity: 0.12;
 }
 
 /* Projects Page Hero */
