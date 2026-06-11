@@ -303,3 +303,222 @@ if (canvas && ctx) {
   window.addEventListener("resize", resizeCanvas);
   window.addEventListener("beforeunload", () => cancelAnimationFrame(frameId));
 }
+
+// Modern Particles Animation System
+const particlesContainers = document.querySelectorAll("[data-particles]");
+const cloudParticles = [];
+const matrixChars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+
+const createParticles = (container) => {
+  if (!container || reducedMotionQuery.matches) return;
+
+  const isMatrix = container.hasAttribute("data-matrix");
+  const isCloud = container.hasAttribute("data-endpoint") || container.hasAttribute("data-cloud");
+  const particleCount = isMatrix ? 30 : isCloud ? 20 : 15;
+
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement("div");
+    particle.className = "particle";
+
+    if (isMatrix) {
+      particle.className = "matrix-column";
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.animationDuration = `${8 + Math.random() * 12}s`;
+      particle.style.animationDelay = `${Math.random() * 5}s`;
+
+      let text = "";
+      const charCount = 5 + Math.floor(Math.random() * 15);
+      for (let j = 0; j < charCount; j++) {
+        text += matrixChars[Math.floor(Math.random() * matrixChars.length)] + "\n";
+      }
+      particle.textContent = text;
+    } else {
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.bottom = "-10px";
+      particle.style.width = `${3 + Math.random() * 6}px`;
+      particle.style.height = particle.style.width;
+      particle.style.animationDuration = `${6 + Math.random() * 10}s`;
+      particle.style.animationDelay = `${Math.random() * 8}s`;
+
+      if (isCloud) {
+        particle.style.background = "radial-gradient(circle, rgba(135, 206, 250, 0.8), transparent)";
+        particle.style.filter = "blur(1px)";
+      }
+    }
+
+    container.appendChild(particle);
+    cloudParticles.push(particle);
+  }
+};
+
+// Pulse rings for network pages
+const createPulseRings = (container) => {
+  if (!container || reducedMotionQuery.matches) return;
+
+  for (let i = 0; i < 3; i++) {
+    const ring = document.createElement("div");
+    ring.className = "pulse-ring";
+    ring.style.left = `${20 + Math.random() * 60}%`;
+    ring.style.top = `${20 + Math.random() * 60}%`;
+    ring.style.animationDelay = `${i * 0.7}s`;
+    container.appendChild(ring);
+  }
+};
+
+// Cloud orbs for cloud pages
+const createCloudOrbs = (container) => {
+  if (!container || reducedMotionQuery.matches) return;
+
+  for (let i = 0; i < 4; i++) {
+    const orb = document.createElement("div");
+    orb.className = "cloud-orb";
+    const size = 80 + Math.random() * 120;
+    orb.style.width = `${size}px`;
+    orb.style.height = `${size}px`;
+    orb.style.left = `${Math.random() * 100}%`;
+    orb.style.top = `${Math.random() * 100}%`;
+    orb.style.animationDelay = `${Math.random() * 5}s`;
+    orb.style.animationDuration = `${10 + Math.random() * 8}s`;
+    container.appendChild(orb);
+  }
+};
+
+// Initialize particles on all containers
+particlesContainers.forEach((container) => {
+  createParticles(container);
+
+  if (container.hasAttribute("data-pulse")) {
+    createPulseRings(container);
+  }
+
+  if (container.hasAttribute("data-cloud")) {
+    createCloudOrbs(container);
+  }
+});
+
+// Floating animation for cloud orbs
+const animateCloudOrbs = () => {
+  const orbs = document.querySelectorAll(".cloud-orb");
+  orbs.forEach((orb) => {
+    const currentLeft = parseFloat(orb.style.left) || 0;
+    const currentTop = parseFloat(orb.style.top) || 0;
+
+    orb.style.left = `${currentLeft + Math.sin(Date.now() * 0.001) * 0.5}%`;
+    orb.style.top = `${currentTop + Math.cos(Date.now() * 0.0008) * 0.3}%`;
+  });
+
+  if (!reducedMotionQuery.matches) {
+    requestAnimationFrame(animateCloudOrbs);
+  }
+};
+
+if (document.querySelector(".cloud-orb") && !reducedMotionQuery.matches) {
+  animateCloudOrbs();
+}
+
+// Connection lines effect for endpoint pages
+const endpointContainer = document.querySelector("[data-endpoint]");
+if (endpointContainer && !reducedMotionQuery.matches) {
+  const createConnectionLine = () => {
+    const line = document.createElement("div");
+    line.style.position = "absolute";
+    line.style.width = "2px";
+    line.style.height = "50px";
+    line.style.background = "linear-gradient(to bottom, transparent, rgba(255, 149, 0, 0.6), transparent)";
+    line.style.left = `${Math.random() * 100}%`;
+    line.style.top = `${Math.random() * 100}%`;
+    line.style.transform = `rotate(${Math.random() * 360}deg)`;
+    line.style.opacity = "0";
+    line.style.transition = "opacity 0.5s ease";
+
+    endpointContainer.appendChild(line);
+
+    setTimeout(() => {
+      line.style.opacity = "0.6";
+    }, 100);
+
+    setTimeout(() => {
+      line.style.opacity = "0";
+      setTimeout(() => line.remove(), 500);
+    }, 2000);
+  };
+
+  setInterval(createConnectionLine, 800);
+}
+
+// Data flow effect for data security pages
+const dataContainer = document.querySelector(".page-data .particles-container");
+if (dataContainer && !reducedMotionQuery.matches) {
+  const createDataPacket = () => {
+    const packet = document.createElement("div");
+    packet.style.position = "absolute";
+    packet.style.width = "6px";
+    packet.style.height = "6px";
+    packet.style.background = "var(--cyan)";
+    packet.style.borderRadius = "2px";
+    packet.style.boxShadow = "0 0 10px var(--cyan)";
+    packet.style.left = `${Math.random() * 100}%`;
+    packet.style.top = `${Math.random() * 100}%`;
+    packet.style.animation = "floatUp 4s ease-out forwards";
+
+    dataContainer.appendChild(packet);
+
+    setTimeout(() => packet.remove(), 4000);
+  };
+
+  setInterval(createDataPacket, 500);
+}
+
+// Mouse parallax effect for hero sections
+const heroSections = document.querySelectorAll(".infra-hero, .page-hero, .hero");
+heroSections.forEach((hero) => {
+  hero.addEventListener("mousemove", (e) => {
+    if (reducedMotionQuery.matches) return;
+
+    const rect = hero.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+    const aurora = hero.querySelector(".aurora");
+    const particles = hero.querySelector(".particles-container");
+
+    if (aurora) {
+      aurora.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+    }
+
+    if (particles) {
+      particles.style.transform = `translate(${x * -15}px, ${y * -15}px)`;
+    }
+  });
+});
+
+// Intersection Observer for reveal animations
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: "0px 0px -50px 0px"
+};
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("is-visible");
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll(".infra-service-card, .infra-product-card, .project-card").forEach((el) => {
+  el.style.opacity = "0";
+  el.style.transform = "translateY(20px)";
+  el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+  revealObserver.observe(el);
+});
+
+// Add styles for reveal animation
+const revealStyles = document.createElement("style");
+revealStyles.textContent = `
+  .is-visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+`;
+document.head.appendChild(revealStyles);
